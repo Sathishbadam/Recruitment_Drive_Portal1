@@ -10,6 +10,6 @@ namespace Recruitment_Drive_Portal1.Domain.Interfaces
     public interface IPanelRegistration
     {
         Task<RegisterPanel> PanelRegistration(RegisterPanel panel);
-        Task<List<RegisterPanel>> GetPanelRegistrationDetails(DateTime? fromDate, DateTime? toDate, string? skill);
+        Task<List<RegisterPanel>> GetPanelRegistrationDetails(DateOnly? fromDate, DateOnly? toDate, string? skill);
     }
 }

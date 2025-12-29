@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Recruitment_Drive_Portal1.Application.Services;
 using Recruitment_Drive_Portal1.Domain.Models;
@@ -21,6 +21,13 @@ namespace Recruitment_Drive_Portal1.Controllers
         public async Task<IActionResult> PanelRegistration(RegisterPanel panel)
         {
             var paneldetails = await _service.RegisterPanel(panel);
+            return Ok(paneldetails);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPanelDetalis(DateOnly? fromDate, DateOnly? toDate, string? skill)
+        {
+            var paneldetails=await _service.GetPanelDetails(fromDate, toDate, skill);
             return Ok(paneldetails);
         }
     }

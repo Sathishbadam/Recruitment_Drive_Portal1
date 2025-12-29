@@ -2,5 +2,6 @@
   <Project Path="Recruitment_Drive_Portal1.Application/Recruitment_Drive_Portal1.Application.csproj" />
   <Project Path="Recruitment_Drive_Portal1.Domain/Recruitment_Drive_Portal1.Domain.csproj" />
   <Project Path="Recruitment_Drive_Portal1.Infrastructure/Recruitment_Drive_Portal1.Infrastructure.csproj" />
+  <Project Path="Recruitment_Drive_Portal1.UI/Recruitment_Drive_Portal1.UI.csproj" />
   <Project Path="Recruitment_Drive_Portal1/Recruitment_Drive_Portal1.csproj" />
 </Solution>

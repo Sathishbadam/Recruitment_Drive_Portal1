@@ -1,10 +1,6 @@
 ﻿using Recruitment_Drive_Portal1.Domain.Interfaces;
 using Recruitment_Drive_Portal1.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Recruitment_Drive_Portal1.Application.Services
 {
@@ -20,6 +16,12 @@ namespace Recruitment_Drive_Portal1.Application.Services
         public async Task<RegisterPanel> RegisterPanel(RegisterPanel panel)
         {
             var registerdetails = await _repo.PanelRegistration(panel);
+            return registerdetails;
+        }
+
+        public async Task<List<RegisterPanel>> GetPanelDetails(DateOnly? fromDate, DateOnly? toDate, string? skill)
+        {
+            var registerdetails= await _repo.GetPanelRegistrationDetails(fromDate, toDate, skill);
             return registerdetails;
         }
     }

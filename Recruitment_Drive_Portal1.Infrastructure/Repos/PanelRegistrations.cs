@@ -15,7 +15,7 @@ namespace Recruitment_Drive_Portal1.Infrastructure.Repos
             _connectionString = "Server=LAPTOP-8VI8V3LR\\SQLEXPRESS;Database=Recruitment_Drive_Portal;Trusted_Connection=True;TrustServerCertificate=True;";
         }
 
-        public async  Task<List<RegisterPanel>> GetPanelRegistrationDetails(DateTime? fromDate, DateTime? toDate, string? skill)
+        public async  Task<List<RegisterPanel>> GetPanelRegistrationDetails(DateOnly? fromDate, DateOnly? toDate, string? skill)
         {
             var panels = new List<RegisterPanel>();
 
@@ -40,9 +40,14 @@ namespace Recruitment_Drive_Portal1.Infrastructure.Repos
                     PhoneNumber = reader["PhoneNumber"].ToString(),
                     Skills = reader["Skills"].ToString(),
                     Experience = (decimal)reader["Experience"],
-                    AvailableDate = (DateOnly)reader["AvailableDate"],
+                    AvailableDate = DateOnly.FromDateTime((DateTime)reader["AvailableDate"]),
                     CreatedOn = (DateTime)reader["CreatedOn"]
                 });
+            }
+
+            if (panels.Count == 0)
+            {
+                throw new Exception("No records");
             }
 
             return panels;
