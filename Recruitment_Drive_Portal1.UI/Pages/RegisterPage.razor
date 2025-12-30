@@ -1,0 +1,149 @@
+﻿@page "/"
+@using MudBlazor
+@using Recruitment_Drive_Portal1.Shared.Models
+@using Recruitment_Drive_Portal1.UI.Interfaces
+@inject IRegisterPanel Panel
+@inject ISnackbar Snackbar
+
+
+<MudPaper Elevation="8"
+          Class="pa-6 mx-auto mt-10"
+          Style="max-width:650px;
+                 background: linear-gradient(135deg, #fdfbfb, #ebedee);
+                 border-radius:18px;">
+
+    <MudText Typo="Typo.h3"
+             Align="Align.Center"
+             Color="Color.Primary"
+             Class="mb-6">
+        Panel Registration Form
+    </MudText>
+
+    <MudForm @ref="_form" Model="@panel">
+
+        <MudStack Spacing="3">
+
+            <MudText Typo="Typo.subtitle1">Name</MudText>
+            <MudTextField @bind-Value="panel.Name"
+                          Placeholder="Enter full name"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="Name is required" />
+
+            <MudText Typo="Typo.subtitle1">Email</MudText>
+            <MudTextField @bind-Value="panel.Email"
+                          Placeholder="Enter email address"
+                          InputType="InputType.Email"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="Email is required" />
+
+            <MudText Typo="Typo.subtitle1">Phone Number</MudText>
+            <MudTextField T="string"
+                          @bind-Value="panel.PhoneNumber"
+                          Placeholder="Enter 10-digit phone number"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="Phone number is required"
+                          MaxLength="10"
+                          Immediate="true"
+                          Validation="ValidatePhoneNumber" />
+
+            <MudText Typo="Typo.subtitle1">Experience (Years)</MudText>
+            <MudNumericField T="decimal"
+                             @bind-Value="panel.Experience"
+                             Placeholder="Years of experience"
+                             Variant="Variant.Outlined"
+                             Min="0"
+                             Max="50"
+                             Required="true"
+                             RequiredError="Experience is required" />
+
+            <MudText Typo="Typo.subtitle1">Skills</MudText>
+            <MudTextField @bind-Value="panel.Skills"
+                          Placeholder="C#, SQL, ASP.NET, Azure"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="Skills are required" />
+
+            <MudText Typo="Typo.subtitle1">Available Date</MudText>
+            <MudDatePicker @bind-Date="_availableDate"
+                           Variant="Variant.Outlined"
+                           DateFormat="yyyy-MM-dd"
+                           MinDate="@DateTime.Today"
+                           Required="true"
+                           RequiredError="Available date is required" />
+
+
+
+            <MudButton OnClick="Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       Class="mt-6"
+                       StartIcon="@Icons.Material.Filled.CheckCircle"
+                       FullWidth="true">
+                Register
+            </MudButton>
+
+        </MudStack>
+
+    </MudForm>
+
+</MudPaper>
+
+
+
+
+@code {
+
+    private MudForm _form;
+
+    private RegisterPanelDTO panel = new RegisterPanelDTO
+    {
+        CreatedOn = DateTime.Now
+    };
+
+    private DateTime? _availableDate;
+
+    private async Task Submit()
+    {
+        await _form.Validate();
+
+        if (!_form.IsValid)
+            return;
+
+        panel.AvailableDate = DateOnly.FromDateTime(_availableDate!.Value);
+
+        var registerdetails = await Panel.RegisterPanelAsync(panel);
+
+        if (registerdetails!=null)
+        {
+            Snackbar.Add("Panel registered successfully", Severity.Success);
+            ClearForm();
+        }
+        else
+        {
+            Snackbar.Add("Failed to register panel", Severity.Error);
+        }
+    }
+
+    private void ClearForm()
+    {
+        panel = new RegisterPanelDTO();
+        _availableDate = null;
+    }
+    private string? ValidatePhoneNumber(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "Phone number is required";
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(value, @"^\d{10}$"))
+            return "Phone number must contain exactly 10 digits";
+
+        return null; // valid
+    }
+
+   
+}
+

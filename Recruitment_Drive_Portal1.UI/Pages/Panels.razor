@@ -1,0 +1,142 @@
+﻿@page "/panels"
+
+@using MudBlazor
+@using Recruitment_Drive_Portal1.Shared.Models
+@using Recruitment_Drive_Portal1.UI.Interfaces
+@inject IRegisterPanel Panel
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+
+
+<MudPaper Class="pa-5">
+
+    <MudText Typo="Typo.h6" Class="mb-3">
+        Search Panels
+    </MudText>
+
+    <MudGrid Spacing="2" AlignItems="AlignItems.Center" Class="mb-4">
+
+        <!-- From Date -->
+        <MudItem xs="12" sm="3">
+            <MudDatePicker Label="From Date"
+                           Variant="Variant.Outlined"
+                           @bind-Date="_fromDate" />
+        </MudItem>
+
+        <!-- To Date -->
+        <MudItem xs="12" sm="3">
+            <MudDatePicker Label="To Date"
+                           Variant="Variant.Outlined"
+                           @bind-Date="_toDate" />
+        </MudItem>
+
+        <!-- Skill -->
+        <MudItem xs="12" sm="3">
+            <MudTextField Label="Skill"
+                          Variant="Variant.Outlined"
+                          @bind-Value="_skill" />
+        </MudItem>
+
+        <!-- Buttons (ENOUGH SPACE) -->
+        <MudItem xs="12" sm="3">
+            <MudStack Direction="Row" Spacing="1" Class="w-100">
+
+                <MudButton OnClick="Search"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Style="flex:1">
+                    Search
+                </MudButton>
+
+                <MudButton OnClick="Download"
+                           Variant="Variant.Filled"
+                           Style="flex:1; background-color:#4CAF50; color:white;">
+                    Download
+                </MudButton>
+
+            </MudStack>
+        </MudItem>
+
+    </MudGrid>
+
+    <MudTable Items="_panels"
+              Hover="true"
+              Dense="true"
+              Bordered="true"
+              Loading="_loading">
+
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Phone</MudTh>
+            <MudTh>Skills</MudTh>
+            <MudTh>Available Date</MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Email</MudTd>
+            <MudTd>@context.PhoneNumber</MudTd>
+            <MudTd>@context.Skills</MudTd>
+            <MudTd>@context.AvailableDate</MudTd>
+        </RowTemplate>
+
+    </MudTable>
+
+</MudPaper>
+
+
+
+
+@code {
+
+    private DateTime? _fromDate;
+    private DateTime? _toDate;
+    private string? _skill;
+
+    private List<RegisterPanelDTO> _panels = new();
+    private bool _loading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        await LoadPanelsAsync();
+    }
+
+    private async Task Search()
+    {
+        await LoadPanelsAsync();
+    }
+
+    private async Task LoadPanelsAsync()
+    {
+        _loading = true;
+
+        DateOnly? from = _fromDate.HasValue
+            ? DateOnly.FromDateTime(_fromDate.Value)
+            : null;
+
+        DateOnly? to = _toDate.HasValue
+            ? DateOnly.FromDateTime(_toDate.Value)
+            : null;
+
+        _panels = await Panel.GetPanelDetailsAsync(from, to, _skill);
+
+        _loading = false;
+    }
+    private async Task Download()
+    {
+        var bytes = await Panel.DownloadPanelDetailsAsync(
+        _fromDate.HasValue ? DateOnly.FromDateTime(_fromDate.Value) : null,
+        _toDate.HasValue ? DateOnly.FromDateTime(_toDate.Value) : null,
+        _skill);
+
+        await JS.InvokeVoidAsync(
+            "downloadFile",
+            "PanelDetails.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            bytes);
+    }
+}
+
+
