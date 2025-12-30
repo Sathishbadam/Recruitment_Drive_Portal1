@@ -1,10 +1,11 @@
-﻿using Recruitment_Drive_Portal1.Domain.Interfaces;
+﻿using Recruitment_Drive_Portal1.Application.Interfaces;
+using Recruitment_Drive_Portal1.Domain.Interfaces;
 using Recruitment_Drive_Portal1.Domain.Models;
 
 
 namespace Recruitment_Drive_Portal1.Application.Services
 {
-    public class PanelRegistrationService
+    public class PanelRegistrationService: IPanelRegistrationService
     {
         private readonly IPanelRegistration _repo;
 
