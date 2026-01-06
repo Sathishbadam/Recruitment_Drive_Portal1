@@ -43,26 +43,39 @@ namespace Recruitment_Drive_Portal1.Controllers
             using var package = new ExcelPackage();
             var sheet = package.Workbook.Worksheets.Add("Panels");
 
+            // Header row
             sheet.Cells[1, 1].Value = "Panel Id";
             sheet.Cells[1, 2].Value = "Name";
             sheet.Cells[1, 3].Value = "Email";
             sheet.Cells[1, 4].Value = "Phone";
-            sheet.Cells[1, 5].Value = "Skills";
-            sheet.Cells[1, 6].Value = "Experience";
-            sheet.Cells[1, 7].Value = "Available Date";
-            sheet.Cells[1, 8].Value = "Created On";
+            sheet.Cells[1, 5].Value = "Designation";
+            sheet.Cells[1, 6].Value = "Interviewer Type";
+            sheet.Cells[1, 7].Value = "Interviewer Mode";
+            sheet.Cells[1, 8].Value = "Experience";
+            sheet.Cells[1, 9].Value = "Skills";
+            sheet.Cells[1, 10].Value = "Available Date";
+            sheet.Cells[1, 11].Value = "Created On";
 
             int row = 2;
+
             foreach (var p in panels)
             {
                 sheet.Cells[row, 1].Value = p.PanelId;
                 sheet.Cells[row, 2].Value = p.Name;
                 sheet.Cells[row, 3].Value = p.Email;
                 sheet.Cells[row, 4].Value = p.PhoneNumber;
-                sheet.Cells[row, 5].Value = p.Skills;
-                sheet.Cells[row, 6].Value = p.Experience;
-                sheet.Cells[row, 7].Value = p.AvailableDate.ToString("yyyy-MM-dd");
-                sheet.Cells[row, 8].Value = p.CreatedOn.ToString("yyyy-MM-dd HH:mm");
+                sheet.Cells[row, 5].Value = p.Designation;
+                sheet.Cells[row, 6].Value = p.InterviewerType;
+                sheet.Cells[row, 7].Value = p.InterviewerMode;
+
+                
+                sheet.Cells[row, 8].Value =
+                    $"{p.ExperienceYears} Years {p.ExperienceMonths} Months";
+
+                sheet.Cells[row, 9].Value = p.Skills;
+                sheet.Cells[row, 10].Value = p.AvailableDate.ToString("yyyy-MM-dd");
+                sheet.Cells[row, 11].Value = p.CreatedOn.ToString("yyyy-MM-dd HH:mm");
+
                 row++;
             }
 
@@ -75,6 +88,7 @@ namespace Recruitment_Drive_Portal1.Controllers
                 "PanelDetails.xlsx"
             );
         }
+
 
 
 
