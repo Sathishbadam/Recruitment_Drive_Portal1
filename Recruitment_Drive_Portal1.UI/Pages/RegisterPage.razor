@@ -5,10 +5,9 @@
 @inject IRegisterPanel Panel
 @inject ISnackbar Snackbar
 
-
 <MudPaper Elevation="8"
           Class="pa-6 mx-auto mt-10"
-          Style="max-width:650px;
+          Style="max-width:700px;
                  background: linear-gradient(135deg, #fdfbfb, #ebedee);
                  border-radius:18px;">
 
@@ -23,88 +22,128 @@
 
         <MudStack Spacing="3">
 
+            <!-- Name -->
             <MudText Typo="Typo.subtitle1">Name</MudText>
             <MudTextField @bind-Value="panel.Name"
-                          Placeholder="Enter full name"
                           Variant="Variant.Outlined"
-                          Required="true"
-                          RequiredError="Name is required" />
+                          Required="true" />
 
+            <!-- Email -->
             <MudText Typo="Typo.subtitle1">Email</MudText>
             <MudTextField @bind-Value="panel.Email"
-                          Placeholder="Enter email address"
                           InputType="InputType.Email"
                           Variant="Variant.Outlined"
-                          Required="true"
-                          RequiredError="Email is required" />
+                          Required="true" />
 
+            <!-- Phone -->
             <MudText Typo="Typo.subtitle1">Phone Number</MudText>
-            <MudTextField T="string"
-                          @bind-Value="panel.PhoneNumber"
-                          Placeholder="Enter 10-digit phone number"
+            <MudTextField @bind-Value="panel.PhoneNumber"
                           Variant="Variant.Outlined"
-                          Required="true"
-                          RequiredError="Phone number is required"
                           MaxLength="10"
-                          Immediate="true"
+                          Required="true"
                           Validation="ValidatePhoneNumber" />
 
-            <MudText Typo="Typo.subtitle1">Experience (Years)</MudText>
-            <MudNumericField T="decimal"
-                             @bind-Value="panel.Experience"
-                             Placeholder="Years of experience"
-                             Variant="Variant.Outlined"
-                             Min="0"
-                             Max="50"
-                             Required="true"
-                             RequiredError="Experience is required" />
+            <!-- Designation -->
+            <MudText Typo="Typo.subtitle1">Designation</MudText>
+            <MudTextField @bind-Value="panel.Designation"
+                          Variant="Variant.Outlined"
+                          Required="true" />
 
+            <!-- Interviewer Type Dropdown -->
+            <MudText Typo="Typo.subtitle1">Interviewer Type</MudText>
+            <MudSelect T="string"
+                       Value="@panel.InterviewerType"
+                       ValueChanged="@(v => panel.InterviewerType = v)"
+                       Variant="Variant.Outlined"
+                       Required="true">
+
+                <MudSelectItem T="string" Value="@("Technical")">Technical</MudSelectItem>
+                <MudSelectItem T="string" Value="@("HR")">HR</MudSelectItem>
+                <MudSelectItem T="string" Value="@("Managerial")">Managerial</MudSelectItem>
+
+            </MudSelect>
+
+
+
+
+            <!-- Interviewer Mode Dropdown -->
+            <MudText Typo="Typo.subtitle1">Interviewer Mode</MudText>
+            <MudSelect T="string"
+                       Value="@panel.InterviewerMode"
+                       ValueChanged="@(v => panel.InterviewerMode = v)"
+                       Variant="Variant.Outlined"
+                       Required="true">
+
+                <MudSelectItem T="string" Value="@("Online")">Online</MudSelectItem>
+                <MudSelectItem T="string" Value="@("Offline")">Offline</MudSelectItem>
+                <MudSelectItem T="string" Value="@("Hybrid")">Hybrid</MudSelectItem>
+
+            </MudSelect>
+
+
+
+            <!-- Experience -->
+            <MudText Typo="Typo.subtitle1">Experience</MudText>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudNumericField @bind-Value="panel.ExperienceYears"
+                                     Label="Years"
+                                     Variant="Variant.Outlined"
+                                     Min="0"
+                                     Max="50"
+                                     Required="true" />
+                </MudItem>
+
+                <MudItem xs="6">
+                    <MudNumericField @bind-Value="panel.ExperienceMonths"
+                                     Label="Months"
+                                     Variant="Variant.Outlined"
+                                     Min="0"
+                                     Max="11"
+                                     Required="true" />
+                </MudItem>
+            </MudGrid>
+
+            <!-- Skills -->
             <MudText Typo="Typo.subtitle1">Skills</MudText>
             <MudTextField @bind-Value="panel.Skills"
-                          Placeholder="C#, SQL, ASP.NET, Azure"
                           Variant="Variant.Outlined"
                           Required="true"
-                          RequiredError="Skills are required" />
+                          Placeholder="Angular, ASP.NET Core, SQL Server" />
 
+            <!-- Available Date -->
             <MudText Typo="Typo.subtitle1">Available Date</MudText>
             <MudDatePicker @bind-Date="_availableDate"
                            Variant="Variant.Outlined"
-                           DateFormat="yyyy-MM-dd"
                            MinDate="@DateTime.Today"
-                           Required="true"
-                           RequiredError="Available date is required" />
+                           Required="true" />
 
-
-
+            <!-- Submit -->
             <MudButton OnClick="Submit"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        Size="Size.Large"
                        Class="mt-6"
-                       StartIcon="@Icons.Material.Filled.CheckCircle"
                        FullWidth="true">
                 Register
             </MudButton>
 
         </MudStack>
-
     </MudForm>
-
 </MudPaper>
 
 
 
 
+
 @code {
-
     private MudForm _form;
+    private DateTime? _availableDate;
 
-    private RegisterPanelDTO panel = new RegisterPanelDTO
+    private RegisterPanelDTO panel = new()
     {
         CreatedOn = DateTime.Now
     };
-
-    private DateTime? _availableDate;
 
     private async Task Submit()
     {
@@ -115,16 +154,16 @@
 
         panel.AvailableDate = DateOnly.FromDateTime(_availableDate!.Value);
 
-        var registerdetails = await Panel.RegisterPanelAsync(panel);
+        var result = await Panel.RegisterPanelAsync(panel);
 
-        if (registerdetails!=null)
+        if (result != null)
         {
             Snackbar.Add("Panel registered successfully", Severity.Success);
             ClearForm();
         }
         else
         {
-            Snackbar.Add("Failed to register panel", Severity.Error);
+            Snackbar.Add("Registration failed", Severity.Error);
         }
     }
 
@@ -133,6 +172,7 @@
         panel = new RegisterPanelDTO();
         _availableDate = null;
     }
+
     private string? ValidatePhoneNumber(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -141,9 +181,8 @@
         if (!System.Text.RegularExpressions.Regex.IsMatch(value, @"^\d{10}$"))
             return "Phone number must contain exactly 10 digits";
 
-        return null; // valid
+        return null;
     }
-
-   
 }
+
 

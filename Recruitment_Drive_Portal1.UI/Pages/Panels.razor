@@ -8,82 +8,43 @@
 @inject IJSRuntime JS
 
 
-<MudPaper Class="pa-5">
+<MudTable Items="_panels"
+          Hover="true"
+          Dense="true"
+          Bordered="true"
+          Loading="_loading">
 
-    <MudText Typo="Typo.h6" Class="mb-3">
-        Search Panels
-    </MudText>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>Designation</MudTh>
+        <MudTh>Interviewer Type</MudTh>
+        <MudTh>Interviewer Mode</MudTh>
+        <MudTh>Experience</MudTh>
+        <MudTh>Skills</MudTh>
+        <MudTh>Available Date</MudTh>
+    </HeaderContent>
 
-    <MudGrid Spacing="2" AlignItems="AlignItems.Center" Class="mb-4">
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Email</MudTd>
+        <MudTd>@context.PhoneNumber</MudTd>
+        <MudTd>@context.Designation</MudTd>
+        <MudTd>@context.InterviewerType</MudTd>
+        <MudTd>@context.InterviewerMode</MudTd>
 
-        <!-- From Date -->
-        <MudItem xs="12" sm="3">
-            <MudDatePicker Label="From Date"
-                           Variant="Variant.Outlined"
-                           @bind-Date="_fromDate" />
-        </MudItem>
+        <!-- Experience display -->
+        <MudTd>
+            @context.ExperienceYears years @context.ExperienceMonths months
+        </MudTd>
 
-        <!-- To Date -->
-        <MudItem xs="12" sm="3">
-            <MudDatePicker Label="To Date"
-                           Variant="Variant.Outlined"
-                           @bind-Date="_toDate" />
-        </MudItem>
+        <MudTd>@context.Skills</MudTd>
+        <MudTd>@context.AvailableDate.ToString("yyyy-MM-dd")</MudTd>
+    </RowTemplate>
 
-        <!-- Skill -->
-        <MudItem xs="12" sm="3">
-            <MudTextField Label="Skill"
-                          Variant="Variant.Outlined"
-                          @bind-Value="_skill" />
-        </MudItem>
+</MudTable>
 
-        <!-- Buttons (ENOUGH SPACE) -->
-        <MudItem xs="12" sm="3">
-            <MudStack Direction="Row" Spacing="1" Class="w-100">
-
-                <MudButton OnClick="Search"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Style="flex:1">
-                    Search
-                </MudButton>
-
-                <MudButton OnClick="Download"
-                           Variant="Variant.Filled"
-                           Style="flex:1; background-color:#4CAF50; color:white;">
-                    Download
-                </MudButton>
-
-            </MudStack>
-        </MudItem>
-
-    </MudGrid>
-
-    <MudTable Items="_panels"
-              Hover="true"
-              Dense="true"
-              Bordered="true"
-              Loading="_loading">
-
-        <HeaderContent>
-            <MudTh>Name</MudTh>
-            <MudTh>Email</MudTh>
-            <MudTh>Phone</MudTh>
-            <MudTh>Skills</MudTh>
-            <MudTh>Available Date</MudTh>
-        </HeaderContent>
-
-        <RowTemplate>
-            <MudTd>@context.Name</MudTd>
-            <MudTd>@context.Email</MudTd>
-            <MudTd>@context.PhoneNumber</MudTd>
-            <MudTd>@context.Skills</MudTd>
-            <MudTd>@context.AvailableDate</MudTd>
-        </RowTemplate>
-
-    </MudTable>
-
-</MudPaper>
 
 
 
